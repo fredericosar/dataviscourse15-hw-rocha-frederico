@@ -1,1 +1,2 @@
-# dataviscourse15-hw-rocha-frederico
+Frederico Rocha
+fred@cs.utah.edu 
