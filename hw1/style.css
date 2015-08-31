@@ -1,0 +1,59 @@
+body {
+	background: url(images/bg.jpg);
+	color: #0A4F89;
+    font-family: 'Josefin San', sans-serif;
+}
+
+.header h1 {
+	font-size: 24px;
+	line-height: 0.2;
+}
+
+.header h2 {
+    font-size: 20px;
+	line-height: 0.4;
+}
+
+.content {
+	color: #F7AC84;
+	margin: 0 0 0 10%;
+	line-height: 1.5;
+}
+
+.content h1{
+	font-size: 16px;
+	margin: 0 0 0 0;
+}
+
+.content h2{
+	font-size: 14px;
+	margin: 0 0 0 0;
+}
+
+.graph {
+	float: left;
+	width: 50%;
+}
+
+.chart {
+	width: 235px;
+	height: 140px;
+}
+
+.chart rect{
+	width: 20px;
+	fill: #F27938;
+}
+
+.chart rect:hover {
+	fill: #F7AC84;
+}
+
+.chart line{
+	stroke: #F27938;
+	stroke-width: 2px;
+}
+
+.chart circle{
+	fill: #F27938;
+}
