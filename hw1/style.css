@@ -26,7 +26,7 @@ body {
 }
 
 .content h2{
-	font-size: 14px;
+	font-size: 13px;
 	margin: 0 0 0 0;
 }
 
@@ -54,10 +54,7 @@ body {
 	stroke-width: 2px;
 }
 
+.chart polygon,
 .chart circle{
-	fill: #F27938;
-}
-
-.chart polygon{
 	fill: #F27938;
 }
