@@ -57,3 +57,7 @@ body {
 .chart circle{
 	fill: #F27938;
 }
+
+.chart polygon{
+	fill: #F27938;
+}
