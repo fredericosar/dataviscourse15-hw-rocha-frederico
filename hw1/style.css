@@ -4,28 +4,32 @@ body {
     font-family: 'Josefin San', sans-serif;
 }
 
-.header h1 {
+header {
+	text-align: center;
+}
+
+header h1 {
 	font-size: 24px;
 	line-height: 0.2;
 }
 
-.header h2 {
+header h2 {
     font-size: 20px;
 	line-height: 0.4;
 }
 
-.content {
+section {
 	color: #F7AC84;
 	margin: 0 0 0 10%;
 	line-height: 1.5;
 }
 
-.content h1{
+section h2{
 	font-size: 16px;
 	margin: 0 0 0 0;
 }
 
-.content h2{
+section h3{
 	font-size: 13px;
 	margin: 0 0 0 0;
 }
