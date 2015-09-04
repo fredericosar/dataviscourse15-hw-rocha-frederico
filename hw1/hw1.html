@@ -15,50 +15,45 @@
             <h2>Bar Chart</h2>
             <div class="graph">
                 <h3>X</h3>
+
+                <!-- I wanted to the the width: 20px; on CSS; however, it would give me an error
+                      at the HTML5 validator. Therefore, I decided to put it inline, even being the same for all rectangles. !-->
+
                 <svg class="chart">
-                    <rect height="100" transform="translate(0,40)"/>
-                    <rect height="80" transform="translate(21,60)"/>
-                    <rect height="130" transform="translate(42,10)"/>
-                    <rect height="90" transform="translate(63,60)"/>
-                    <rect height="110" transform="translate(84,30)"/>
-                    <rect height="140" transform="translate(105,00)"/>
-                    <rect height="60" transform="translate(126,80)"/>
-                    <rect height="40" transform="translate(147,100)"/>
-                    <rect height="120" transform="translate(168,20)"/>
-                    <rect height="70" transform="translate(189,70)"/>
-                    <rect height="50" transform="translate(210,90)"/>
+                    <rect height="100" width="20" transform="translate(0,40)"/>
+                    <rect height="080" width="20" transform="translate(21,60)"/>
+                    <rect height="130" width="20" transform="translate(42,10)"/>
+                    <rect height="090" width="20" transform="translate(63,60)"/>
+                    <rect height="110" width="20" transform="translate(84,30)"/>
+                    <rect height="140" width="20" transform="translate(105,00)"/>
+                    <rect height="060" width="20" transform="translate(126,80)"/>
+                    <rect height="040" width="20" transform="translate(147,100)"/>
+                    <rect height="120" width="20" transform="translate(168,20)"/>
+                    <rect height="070" width="20" transform="translate(189,70)"/>
+                    <rect height="050" width="20" transform="translate(210,90)"/>
                 </svg>
             </div>
             <div class="graph">
                 <h3>Y</h3>
                 <svg class="chart">
-                    <rect height="91.4" transform="translate(0,48.6)"/>
-                    <rect height="81.4" transform="translate(21,58.6)"/>
-                    <rect height="87.4" transform="translate(42,52.6)"/>
-                    <rect height="87.7" transform="translate(63,52.3)"/>
-                    <rect height="92.6" transform="translate(84,47.4)"/>
-                    <rect height="81.0" transform="translate(105,59)"/>
-                    <rect height="61.3" transform="translate(126,78.7)"/>
-                    <rect height="31.0" transform="translate(147,109)"/>
-                    <rect height="91.3" transform="translate(168,48.7)"/>
-                    <rect height="72.6" transform="translate(189,67.4)"/>
-                    <rect height="50.0" transform="translate(210,90)"/>
+                    <rect height="91.4" width="20" transform="translate(0,48.6)"/>
+                    <rect height="81.4" width="20" transform="translate(21,58.6)"/>
+                    <rect height="87.4" width="20" transform="translate(42,52.6)"/>
+                    <rect height="87.7" width="20" transform="translate(63,52.3)"/>
+                    <rect height="92.6" width="20" transform="translate(84,47.4)"/>
+                    <rect height="81.0" width="20" transform="translate(105,59)"/>
+                    <rect height="61.3" width="20" transform="translate(126,78.7)"/>
+                    <rect height="31.0" width="20" transform="translate(147,109)"/>
+                    <rect height="91.3" width="20" transform="translate(168,48.7)"/>
+                    <rect height="72.6" width="20" transform="translate(189,67.4)"/>
+                    <rect height="50.0" width="20" transform="translate(210,90)"/>
                 </svg>
             </div>
             <h2>Line Chart</h2>
             <div class="graph">
                 <h3>X</h3>
                 <svg class="chart">
-                    <line x1="0" y1="40" x2="21" y2="60"/>
-                    <line x1="21" y1="60" x2="42" y2="10"/>
-                    <line x1="42" y1="10" x2="63" y2="50"/>
-                    <line x1="63" y1="50" x2="84" y2="30"/>
-                    <line x1="84" y1="30" x2="105" y2="0"/>
-                    <line x1="105" y1="0" x2="126" y2="80"/>
-                    <line x1="126" y1="80" x2="147" y2="100"/>
-                    <line x1="147" y1="100" x2="168" y2="20"/>
-                    <line x1="168" y1="20" x2="189" y2="70"/>
-                    <line x1="189" y1="70" x2="210" y2="90"/>
+                    <path d="M0 41 L21 60 L42 10 L63 50 L84 30 L104 0 L126 80 L147 100 L168 20 L189 70 L210 90"/>
                 </svg>
             </div>
             <div class="graph">

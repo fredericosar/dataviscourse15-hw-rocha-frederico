@@ -1,6 +1,6 @@
 body {
 	background: url(images/bg.jpg);
-	color: #0A4F89;
+	color: #0a4f89;
     font-family: 'Josefin San', sans-serif;
 }
 
@@ -19,19 +19,19 @@ header h2 {
 }
 
 section {
-	color: #F7AC84;
+	color: #f7ac84;
 	margin: 0 0 0 10%;
 	line-height: 1.5;
 }
 
 section h2{
 	font-size: 16px;
-	margin: 0 0 0 0;
+	margin: 0;
 }
 
 section h3{
 	font-size: 13px;
-	margin: 0 0 0 0;
+	margin: 0;
 }
 
 .graph {
@@ -45,20 +45,25 @@ section h3{
 }
 
 .chart rect{
-	width: 20px;
-	fill: #F27938;
+	fill: #f27938;
+}
+
+.chart path{
+	stroke: #f27938;
+	stroke-width: 2px;
+	fill: none;
 }
 
 .chart rect:hover {
-	fill: #F7AC84;
+	fill: #f7ac84;
 }
 
 .chart line{
-	stroke: #F27938;
+	stroke: #f27938;
 	stroke-width: 2px;
 }
 
 .chart polygon,
 .chart circle{
-	fill: #F27938;
+	fill: #f27938;
 }
