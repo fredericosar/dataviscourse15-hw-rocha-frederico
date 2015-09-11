@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Homework 2 by Frederico Rocha</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="script.js"> </script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    </head>
+    <body onload="changeData()">
+        <header>
+            <h1>CS-5630 / CS-6630 Homework 2</h1>
+            <h2>Frederico Rocha - u0810018</h2>
+            <h2>fred@cs.utah.edu</h2>
+        </header>
+        <section>
+            <h2> Menus </h2>
+                <button onclick="staircase()">Staircase</button>
+                <label>Dataset:</label>
+                <select id="dataset" onchange="changeData()">
+                    <option value="anscombe_I">Anscombe's Quartet I</option>
+                    <option selected value="anscombe_II">Anscombe's Quartet II</option>
+                    <option value="anscombe_III">Anscombe's Quartet III</option>
+                    <option value="anscombe_IV">Anscombe's Quartet IV</option>
+                </select>
+                <button onclick="randomSubset()">Random Subset</button>
+        </section>
+        <section>
+            <h2>Bar Chart</h2>
+            <div class="graph">
+                <h3>X</h3>
+                <svg id="firstBarChart" class="chart">
+                    <g transform="translate(0 140) scale(1 -1)"/>
+                </svg>
+            </div>
+            <div class="graph">
+                <h3>Y</h3>
+                <svg id="secondBarChart" class="chart">
+                    <g transform="translate(0 140) scale(1 -1)"/>
+                </svg>
+            </div>
+            <h2>Line Chart</h2>
+            <div class="graph">
+                <h3>X</h3>
+                <svg id="firstLineChart" class="chart">
+                    <g transform="translate(0 140) scale(1 -1)"> 
+                        <path d="M0 -1 L20 -1 L40 -1 L60 -1 L80 -1 L100 -1 L120 -1 L140 -1 L160 -1 L180 -1 L200 -1"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="graph">
+                <h3>Y</h3>
+                <svg id="secondLineChart" class="chart">
+                    <g transform="translate(0 140) scale(1 -1)"> 
+                        <path d="M0 -1 L20 -1 L40 -1 L60 -1 L80 -1 L100 -1 L120 -1 L140 -1 L160 -1 L180 -1 L200 -1"/>
+                    </g>
+                </svg>
+            </div>
+            <h2>Area Chart</h2>
+            <div class="graph">
+                <h3>X</h3>
+                <svg id="firstAreaChart" class="areas">
+                    <g transform="translate(0 140) scale(1 -1)"> 
+                        <path d="M0 -1 L20 -1 L40 -1 L60 -1 L80 -1 L100 -1 L120 -1 L140 -1 L160 -1 L180 -1 L200 -1"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="graph">
+                <h3>Y</h3>
+                <svg id="secondAreaChart" class="areas">
+                    <g transform="translate(0 140) scale(1 -1)"> 
+                        <path d="M0 -1 L20 -1 L40 -1 L60 -1 L80 -1 L100 -1 L120 -1 L140 -1 L160 -1 L180 -1 L200 -1"/>
+                    </g>
+                </svg>
+            </div>
+            <h2>Scatterplot</h2>
+            <div id="tooltip" class="tooltip"></div>
+            <div class="graph">
+                <svg id="scatterplot"class="chart">
+                    <g transform="translate(0, 140) scale(1, -1)"/>
+            </div>
+        </section>
+    </body>
+</html>
