@@ -15,14 +15,15 @@
         </header>
         <section>
             <h2> Menus </h2>
-                <button onclick="staircase()">Staircase</button>
-                <label>Dataset:</label>
+                <h3>Dataset:</h3>
                 <select id="dataset" onchange="changeData()">
                     <option value="anscombe_I">Anscombe's Quartet I</option>
                     <option selected value="anscombe_II">Anscombe's Quartet II</option>
                     <option value="anscombe_III">Anscombe's Quartet III</option>
                     <option value="anscombe_IV">Anscombe's Quartet IV</option>
                 </select>
+                </br>
+                <button onclick="staircase()">Staircase</button>
                 <button onclick="randomSubset()">Random Subset</button>
         </section>
         <section>

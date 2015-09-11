@@ -176,7 +176,7 @@ function update(error, data) {
 
     /* selecting existing structure */
     var lineChart = d3.select("#firstLineChart").select("g") /* select the pre defined group */
-        .select("path");
+        .select("path"); /* select the path */
 
     /* update the line path */
     lineChart.transition() /* create animated transition */
@@ -270,20 +270,18 @@ function update(error, data) {
             tooltip.transition()
                 .style("opacity", 0); 
         })
+        .attr("cy", -5) /* set the cx attribute - start at the bottom for cool transition */
         .attr("cx", function (d, i) { /* set the cx attribute */
             return d.a * 10;
         })
-        .attr("cy", function (d, i) { /* set the cy attribute */
-            return d.b * 10;
-        })
-        .attr("r", 5); /* set the radius attribute */
+        .attr("r", 0); /* set the radius attribute - start at zero for cool transitions*/
 
     /* removing old elements */
     scatterplot.exit() /* get the exit selection */
         .transition() /* create animated transition */
         .duration(1000) /* set the duration of the transition */
         .delay(function(d, i) { /* delay function to create cascade style */
-            return i * 100;
+            return i * (100 + (10 * i));
         })
         .attr("r", 0) /*set height to zero on transition */
         .remove();
@@ -299,7 +297,8 @@ function update(error, data) {
         })
         .attr("cy", function (d, i) { /* set the cy attribute */
             return d.b * 10;
-        });
+        })
+        .attr("r", 5); /* set the radius attribute */
     // ****** TODO: PART IV ******
 }
 
