@@ -1,0 +1,68 @@
+body {
+	background: url(images/bg.jpg);
+	color: #0c2c84;
+	font-family: 'Josefin San', sans-serif;
+}
+
+header {
+	text-align: center;
+}
+
+header h1 {
+	font-size: 18px;
+	line-height: 0.2;
+}
+
+header h2 {
+    font-size: 14px;
+	line-height: 0.4;
+}
+
+section {
+	margin: 0;
+	line-height: 1.5;
+}
+
+section h2{
+	font-size: 12px;
+	margin: 0;
+	color: #081d58;
+}
+
+#info {
+	text-align: center;
+	font-size: 14px;
+	height: 15px;
+	color: #41b6c4;
+}
+	
+.charts {
+	float: left;
+	border: 1px solid lightgray;
+    margin: 10px;
+}
+
+#states {
+    stroke: rgb(255, 255, 255);
+    fill: rgb(216, 216, 216);
+}
+        
+.game {
+    fill: rgba(0, 117, 128, 0.01);
+    stroke: #0868ac;
+}
+        
+.team {
+    stroke: rgb(255, 255, 255);
+    fill: rgb(123, 123, 123);
+}
+    
+#links > line {
+	stroke: #ccebc5;
+}
+        
+#xAxis path,
+#yAxis path {
+        fill: none;
+        stroke: black;
+}
