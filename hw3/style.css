@@ -1,6 +1,6 @@
 body {
 	background: url(images/bg.jpg);
-	color: #0c2c84;
+	color: #600026;
 	font-family: 'Josefin San', sans-serif;
 }
 
@@ -25,31 +25,30 @@ section {
 
 section h2{
 	font-size: 12px;
-	margin: 0;
-	color: #081d58;
+	margin: 0 0 5px 15px;
 }
 
 #info {
 	text-align: center;
 	font-size: 14px;
 	height: 15px;
-	color: #41b6c4;
 }
 	
 .charts {
 	float: left;
 	border: 1px solid lightgray;
-    margin: 10px;
+    margin: 2px;
 }
 
 #states {
-    stroke: rgb(255, 255, 255);
-    fill: rgb(216, 216, 216);
+    stroke: #fff;
+    fill: #fed976;
 }
         
 .game {
-    fill: rgba(0, 117, 128, 0.01);
-    stroke: #0868ac;
+    stroke: #9E9E9E;
+    stroke-width: 0.8px;
+    fill: #fff;
 }
         
 .team {
@@ -58,11 +57,16 @@ section h2{
 }
     
 #links > line {
-	stroke: #ccebc5;
+	stroke: #fed976;
 }
         
 #xAxis path,
 #yAxis path {
-        fill: none;
-        stroke: black;
+    fill: none;
+    stroke: black;
+}
+
+#xAxis,
+#yAxis text {
+	font-size: 8px;
 }
