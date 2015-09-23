@@ -7,17 +7,24 @@ var data,
     selectedSeries,
     colorScale;
 
+
 /* EVENT RESPONSE FUNCTIONS */
+
 function setHover(d) {
+    // There are FOUR data_types that can be hovered;
+    // nothing (null), a single Game, a Team, or
+    // a Location
+
+    // ******* TODO: PART V *******
     if(d == null) d3.select("#info").html("");
     else if(d["data_type"] == "Game") d3.select("#info").html("<h2>" + d["Visit Team Name"] + " @ " + d["Home Team Name"] + "</h2>");
     else if(d["data_type"] == "Team") d3.select("#info").html("<h2>" + d["name"] + "</h2>");
+    else if(typeof d == 'string') d3.select("#info").html("<h2>" + d + "</h2>");
     else{
         var info = ""
-        for(gameNum = 0; gameNum < d.value["games"].length; gameNum++){
-            var game = d.value["games"][gameNum];
-            info += game["Visit Team Name"] + " @ " + game["Home Team Name"] + " ";
-        }
+        for(gameNum = 0; gameNum < d.value["games"].length - 1; gameNum++)
+            info += d.value["games"][gameNum]["Visit Team Name"] + " @ " + d.value["games"][gameNum]["Home Team Name"] + ", ";
+        info += d.value["games"][gameNum]["Visit Team Name"] + " @ " + d.value["games"][gameNum]["Home Team Name"]+ " ";
         d3.select("#info").html("<h2>" + info + "</h2>");
     }
 }
@@ -27,107 +34,128 @@ function clearHover() {
 }
 
 function changeSelection(d) {
-    if(d == null);
-    else if(d["data_type"] == "Game") console.log(d);
+    // There are FOUR data_types that can be selected;
+    // an empty selection (null), a single Game,
+    // a Team, or a Location.
+    if(d["data_type"] == "Game") selectedSeries = [d];
     else if(d["data_type"] == "Team") selectedSeries = teamSchedules[d["name"]];
-    else{
-        var info = ""
-        for(gameNum = 0; gameNum < d.value["games"].length; gameNum++){
-            var game = d.value["games"][gameNum];
-            info += game["Visit Team Name"] + " @ " + game["Home Team Name"] + " ";
-        }
-        d3.select("#info").html("<h2>" + info + "</h2>");
-    }
-
+    else selectedSeries = d;
     // ******* TODO: PART V *******
     
-    updateBarChart();
-
     // Update everything that is data-dependent
     // Note that updateBarChart() needs to come first
     // so that the color scale is set
+    updateBarChart();
+    updateMap();
+    updateForceDirectedGraph();
 }
 
 /* DRAWING FUNCTIONS */
 
+// insight on axis from http://bl.ocks.org/mbostock/4403522 and http://bl.ocks.org/mbostock/3885304
 function updateBarChart() {
+
+    // check for games on the same date
+    var gameDates = {};
+    var numGames = 0;
+    for(var i = 0; i < selectedSeries.length; i++){
+        if(!gameDates.hasOwnProperty(selectedSeries[i].Date)) {
+            gameDates[selectedSeries[i].Date] = [];
+            gameDates[selectedSeries[i].Date].push(numGames++);
+        }
+    }
+
+    // calculate sizes
     var svgBounds = document.getElementById("barChart").getBoundingClientRect(),
-        xAxisSize = 100,
-        yAxisSize = 60;
+        xAxisSize = 360,
+        yAxisSize = 405,
+        gap = 5
+        width = (xAxisSize - (numGames * gap)) / numGames; /* equal space + gap per bar */
 
-    /* create stacles */
-    var attendanceScale = d3.scale.linear()
-        .domain([0, d3.max(selectedSeries, function(d){
-            return d["attendance"];
-        })])
-        .range([0, svgBounds["height"]]);
-
-    /* color scale */
-    colorScale = d3.scale.linear()
-        .domain([d3.min(selectedSeries, function(d){
-            return d["attendance"];
-        }), d3.max(selectedSeries, function(d){
-            return d["attendance"];
-        })])
-        .range(["#4eb3d3","#084081"]);
-
-    // /* create axis */
-    // var xAxis = d3.svg.axis()
-    //     .orient("bottom")
-    //     .scale(attendanceScale);
-
-    // var yAxis = d3.svg.axis()
-    //     .orient("left")
-    //     .scale(attendanceScale);
+    // ******* TODO: PART I *******
     
-    // /* append axis */
-    // d3.select("#yAxis")
-    //     .call(yAxis);
+    // Create the x and y scales; make
+    // sure to leave room for the axes
+    var yScale = d3.scale.linear()
+        .domain([15000, d3.max(data.vertices, function(d){
+                return d["attendance"];
+            })])
+        .range([yAxisSize, 0]);
 
-    // d3.select("#xAxis")
-    //     .call(xAxis);
+    var xScale = d3.scale.ordinal()
+        .rangeRoundBands([0, xAxisSize])
+        .domain(selectedSeries.map(function(d){
+            return new Date(d["Date"]); 
+        }));
 
-    /* handle existing structure */
+    // Create colorScale (note that colorScale
+    // is global! Other functions will refer to it)
+    colorScale = d3.scale.linear()
+        .domain([d3.min(data.vertices, function(d){
+                return d["attendance"];
+            }), d3.max(data.vertices, function(d){
+                return d["attendance"];
+        })])
+        .range(["#feb24c","#800026"]);
+    // Create the axes (hint: use #xAxis and #yAxis)
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left");
+    d3.select("#yAxis")
+        .classed("yAxis", true)
+        .call(yAxis);
+    d3.select("#yAxis")
+        .selectAll("text")
+        .attr("x", -27)
+        .style("text-anchor", "start");
+
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .tickFormat(d3.time.format("%m/%d/%Y"))
+        .orient("bottom");
+    d3.select("#xAxis")
+        .classed("yAxis", true)
+        .call(xAxis);
+    d3.select("#xAxis")
+        .selectAll("text")
+        .attr("transform", "translate(-12, 45) rotate(-90)")
+        .style("text-anchor", "start");
+
+    // Create the bars (hint: use #bars)
     var bars = d3.select("#bars")
         .selectAll("rect")
         .data(selectedSeries);
 
-    /* initialize bar */
     bars.enter()
         .append("rect")
         .attr("y", 0) 
-        .attr("x", function(d, i){
-            return i * (svgBounds["width"] / selectedSeries.length);
-        }) 
-        .attr("width", function(d, i){
-            return svgBounds["width"] / (selectedSeries.length + 2);
-        })
+        .attr("x", function(d){
+                return (width + gap) * gameDates[d.Date] + gap / 2;
+            }) 
+        .attr("width", width)
         .attr("height", 0);
 
-    /* removing old elements */
-    bars.exit() /* get the exit selection */
-        .transition() /* create animated transition */
-        .duration(1500) /* set the duration of the transition */
-        .delay(function(d, i) { /* delay function to create cascade style */
-            return i * 100;
-        })
-        .attr("height", 0) /*set height to zero on transition */
+    bars.exit()
         .remove();
 
-    /* updating remaining elements */
-    bars.transition()
-        .duration(1500)
-        .delay(function(d, i){
-            return i * 50;
+    bars.attr("x", function(d){
+            return (width + gap) * gameDates[d.Date] + gap / 2;
+        }) 
+        .attr("width", function(d, i){
+            return width;
+        })
+        .attr("y", function(d){
+            return yScale(d["attendance"]);
         })
         .attr("height", function(d){
-            return attendanceScale(d["attendance"]);
+            return yAxisSize - yScale(d["attendance"]);
         })
         .attr("fill", function(d){
             return colorScale(d["attendance"]);
         });
-
-    /* mouse actions */
+    // ******* TODO: PART IV *******
+    
+    // Make the bars respond to hover and click events
     bars.on("mouseover", function(d){
             setHover(d);
         })
@@ -140,23 +168,37 @@ function updateBarChart() {
 }
 
 function updateForceDirectedGraph() {
+    // ******* TODO: PART II *******
+    
+    // Set up the force-directed
+    // layout engine
     var force = d3.layout.force()
         .charge(-100)
-        .linkDistance(1)
         .friction(0.9)
         .gravity(0.1)
-        .size([400, 400]);
+        .size([400, 450]);
 
     force
         .nodes(data.vertices)
         .links(data.edges)
         .start();
+    // Draw the links (hint: use #links)
+    var links = d3.select("#links")
+        .selectAll("line")
+        .data(data.edges);
 
+    links
+        .enter()
+        .append("line");
+    // Update the links based on the current selection
+
+    // Draw the nodes (hint: use #nodes), and make them respond to dragging
     var nodes = d3.select("#nodes")
         .selectAll("path")
         .data(data.vertices);
 
-    nodes.enter()
+    nodes
+        .enter()
         .append("path")
         .attr("class", function(d){
             if(d["data_type"] == "Team") return "team";
@@ -164,15 +206,9 @@ function updateForceDirectedGraph() {
         })
         .call(force.drag);
 
-    var links = d3.select("#links")
-        .selectAll("line")
-        .data(data.edges)
-        .enter()
-        .append("line");
-
-    
     // ******* TODO: PART IV *******
     
+    // Make the nodes respond to hover and click events
     nodes.on("mouseover", function(d){
             setHover(d);
         })
@@ -184,10 +220,34 @@ function updateForceDirectedGraph() {
         });
     
     // ******* TODO: PART V *******
+    nodes.style("fill", function(d, i){
+        for(var i = 0; i < selectedSeries.length; i++){
+            if(d == selectedSeries[i]){
+                return colorScale(d["attendance"]);
+                break;
+            }
+        }
+        });
     
     // ******* TODO: PART II *******
     
-    force.on("tick", function () {
+    // Finally, tell the layout engine how
+    // to manipulate the nodes and links
+    // that we've drawn
+    force.on("tick", function(){
+        nodes.attr("transform", function (d, i) {
+            for(var i = 0; i < selectedSeries.length; i++){
+                if(d == selectedSeries[i]){
+                        return "translate(" + d.x + ", " + d.y + ")" + " scale(2,2)";
+                    }
+                }  
+                return "translate(" + d.x + ", " + d.y + ")";
+            })
+            .attr("d", d3.svg.symbol().type(function(d){
+                    if(d["data_type"] == "Team") return "triangle-up";
+                    return "circle";
+                })
+            );
         links.attr("x1", function (d) {
                 return d.source.x;
             })
@@ -200,19 +260,17 @@ function updateForceDirectedGraph() {
             .attr("y2", function (d) {
                 return d.target.y;
             });
-
-        nodes.attr("transform", function (d) {
-                return "translate(" + d.x + ", " + d.y + ")";
-            })
-            .attr("d", d3.svg.symbol().type(function(d){
-                    if(d["data_type"] == "Team") return "triangle-up";
-                })
-            );
     });
 }
 
-// insights from http://bl.ocks.org/mbostock/4090848
 function updateMap() {
+    // ******* TODO: PART III *******
+    
+    // Draw the games on the map (hint: use #points)
+    
+    // NOTE: locationData is *NOT* a Javascript Array, like
+    // we'd normally use for .data() ... instead, it's just an
+    // object (often called an Associative Array)!
     var projection = d3.geo.albersUsa()
         .scale(800)
         .translate([305, 218]);
@@ -223,23 +281,12 @@ function updateMap() {
 
     gamesPlayed.enter()
         .append("circle")
-        .attr("r", function (d){
-            return 4;
-        })
+        .attr("r", 4)
         .attr("transform", function(d){
-            return "translate(" + projection([
-                d.value.longitude,
-                d.value.latitude
-                ]) + ")"
+            return "translate(" + projection([d.value.longitude, d.value.latitude]) + ")"
         })
-        .style("opacity", 0)
         .classed("game", true);
 
-    gamesPlayed.transition()
-        .duration(1500)
-        .style("opacity", 1);
-
-    /* mouse actions */
     gamesPlayed.on("mouseover", function(d){
             setHover(d);
         })
@@ -247,27 +294,52 @@ function updateMap() {
             clearHover();
         })
         .on("click", function(d){
-            changeSelection(d);
+            changeSelection(d.value["games"]);
         });
-    
-    // NOTE: locationData is *NOT* a Javascript Array, like
-    // we'd normally use for .data() ... instead, it's just an
-    // object (often called an Associative Array)!
-    
+
     // ******* TODO: PART V *******
     
     // Update the circle appearance (set the fill to the
     // mean attendance of all selected games... if there
     // are no matching games, revert to the circle's default style)
+    gamesPlayed.attr("r", function(d, i){
+            for(var i = 0; i < d.value["games"].length; i++){
+                for(var j = 0; j < selectedSeries.length; j++){
+                    if(d.value["games"][i] == selectedSeries[j]){
+                        return 12;
+                        break;
+                    }
+                }    
+            }
+            return 4;
+        })
+        .style("fill", function(d){
+            var totalAttendance = 0,
+                totalGames = 0;
+            for(var i = 0; i < d.value["games"].length; i++){
+                for(var j = 0; j < selectedSeries.length; j++){
+                    if(d.value["games"][i] == selectedSeries[j]){
+                        totalAttendance += d.value["games"][i]["attendance"];
+                        totalGames++;
+                        break;
+                    }
+                }    
+            }
+            if(totalAttendance != 0){
+                return colorScale(totalAttendance / totalGames);
+            }
+        });
 }
 
+// code from http://bl.ocks.org/mbostock/2869946
 function drawStates(usStateData) {
-    // code from http://bl.ocks.org/mbostock/2869946
+    // ******* TODO: PART III *******
+    
+    // Draw the background (state outlines; hint: use #states)
     d3.select("#states")
         .datum(topojson.feature(usStateData, usStateData.objects.states))
         .attr("d", d3.geo.path());
 }
-
 
 /* DATA DERIVATION */
 
@@ -397,7 +469,6 @@ function deriveTeamSchedules() {
         }
     }
 }
-
 
 /* DATA LOADING */
 
