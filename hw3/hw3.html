@@ -36,10 +36,16 @@
 
 	        <div class="charts">
 	            <h2>Pac-12 Game Map</h2>
+	            <div id="tooltip" class="tooltip"></div>
 	            <svg id="map" width="600" height="450">
 	                <path id="states" transform="translate(-55, 30) scale(0.75, 0.75)"></path>
 	                <g id="points"></g>
 	            </svg>
+	        </div>
+
+	         <div class="charts" id="addInfo">
+	            <h2>Pac-12 Additional Game Information</h2>
+	            <svg id="svgInfo" width="400" height="20"></svg>
 	        </div>
 	    </section>
     </body>

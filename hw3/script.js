@@ -1,3 +1,10 @@
+/**
+** EXTRAS
+** Tooltip on Stadium
+** Information for games without location
+**/
+
+
 /*globals d3, topojson, document*/
 // These are helpers for those using JSHint
 
@@ -6,7 +13,6 @@ var data,
     teamSchedules,
     selectedSeries,
     colorScale;
-
 
 /* EVENT RESPONSE FUNCTIONS */
 
@@ -48,6 +54,7 @@ function changeSelection(d) {
     updateBarChart();
     updateMap();
     updateForceDirectedGraph();
+    unknownLocation();
 }
 
 /* DRAWING FUNCTIONS */
@@ -77,7 +84,7 @@ function updateBarChart() {
     // Create the x and y scales; make
     // sure to leave room for the axes
     var yScale = d3.scale.linear()
-        .domain([15000, d3.max(data.vertices, function(d){
+        .domain([0, d3.max(data.vertices, function(d){
                 return d["attendance"];
             })])
         .range([yAxisSize, 0]);
@@ -287,11 +294,21 @@ function updateMap() {
         })
         .classed("game", true);
 
+    var tooltip = d3.select("#tooltip");
+
     gamesPlayed.on("mouseover", function(d){
             setHover(d);
+            tooltip.transition()
+                .duration(250)
+                .style("opacity", 1)
+            tooltip.html(d.value["games"][0]["Stadium Name"])
+                .style("left", (d3.event.pageX + 5) + "px")
+                .style("top", (d3.event.pageY - 15) + "px");
         })
         .on("mouseout", function () {
             clearHover();
+            tooltip.transition()
+                .style("opacity", 0); 
         })
         .on("click", function(d){
             changeSelection(d.value["games"]);
@@ -303,31 +320,20 @@ function updateMap() {
     // mean attendance of all selected games... if there
     // are no matching games, revert to the circle's default style)
     gamesPlayed.attr("r", function(d, i){
-            for(var i = 0; i < d.value["games"].length; i++){
-                for(var j = 0; j < selectedSeries.length; j++){
-                    if(d.value["games"][i] == selectedSeries[j]){
-                        return 12;
-                        break;
-                    }
-                }    
-            }
+            for(var i = 0; i < d.value["games"].length; i++)
+                if(selectedSeries.indexOf(d.value["games"][i]) != -1)
+                    return 12;
             return 4;
         })
         .style("fill", function(d){
-            var totalAttendance = 0,
-                totalGames = 0;
+            var totalAttendance = 0, totalGames = 0;
             for(var i = 0; i < d.value["games"].length; i++){
-                for(var j = 0; j < selectedSeries.length; j++){
-                    if(d.value["games"][i] == selectedSeries[j]){
-                        totalAttendance += d.value["games"][i]["attendance"];
-                        totalGames++;
-                        break;
-                    }
-                }    
+                if(selectedSeries.indexOf(d.value["games"][i]) != -1){
+                    totalAttendance += d.value["games"][i]["attendance"];
+                    totalGames++;
+                }  
             }
-            if(totalAttendance != 0){
-                return colorScale(totalAttendance / totalGames);
-            }
+            if(totalAttendance != 0) return colorScale(totalAttendance / totalGames);
         });
 }
 
@@ -339,6 +345,35 @@ function drawStates(usStateData) {
     d3.select("#states")
         .datum(topojson.feature(usStateData, usStateData.objects.states))
         .attr("d", d3.geo.path());
+}
+
+function unknownLocation(){
+    var svg = d3.select("#svgInfo");
+    svg.selectAll("g").remove();
+
+    var undefinedCount = 0;
+    for(var i = 0; i < selectedSeries.length; i++){
+        if(selectedSeries[i]["latitude"] === undefined){
+            var g = svg.append("g").attr("transform","translate(15," + ++undefinedCount * 15 + ")")
+            g.append("text")
+                .style("opacity", 0)
+                .style("font-weight", "bold")
+                .transition()
+                .duration(2000)
+                .delay(function(d, i) {
+                    return i * 700;
+                })
+                .text(selectedSeries[i]["Visit Team Name"] + " @ " + selectedSeries[i]["Home Team Name"] + " was played in an unknown location")
+                .style("fill", function(){
+                    return colorScale(selectedSeries[i]["attendance"]);
+                })
+                .style("opacity", 1);
+        }
+    }
+
+    d3.select("#addInfo").style("opacity", undefinedCount == 0 ? 0 : 1);
+
+    svg.transition().duration(1500).attr("height", undefinedCount == 0 ? 20 : 5 + (15 * undefinedCount));
 }
 
 /* DATA DERIVATION */
