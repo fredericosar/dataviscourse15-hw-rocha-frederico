@@ -71,15 +71,18 @@ CountVis.prototype.initVis = function () {
     // ******* TASK 2a *******
     
     // define a clipping region for the graph
-    // self.visScale = d3.time.scale().domain([new Date("2014/12/3"), new Date("2014/12/12")]).range([0,500])
 
     // create the brush, and
     // ******* TASK 3a *******
     // fire the "selectionChanged" event on self.eventHandler with the needed arguments
-    var brushed = function () {
-        self.eventHandler.selectionChanged(self.brush.extent()[0], self.brush.extent()[1]);
+    self.brushed = function () {
+        if(self.brush.empty()){
+            self.eventHandler.selectionChanged(minMaxX[0], minMaxX[1]);
+        }else{
+            self.eventHandler.selectionChanged(self.brush.extent()[0], self.brush.extent()[1]);
+        }
     }
-    self.brush = d3.svg.brush().x(self.xScale).on("brush", brushed);
+    self.brush = d3.svg.brush().x(self.xScale).on("brush", self.brushed);
 
     // visual elements
     self.visG = self.svg.append("g").attr({
@@ -88,7 +91,7 @@ CountVis.prototype.initVis = function () {
 
     self.visG.append("g").attr("class", "xAxis axis").attr("transform", "translate(0," + self.graphH + ")");
     self.visG.append("g").attr("class", "yAxis axis");
-    
+
     self.visG.append("g").attr("class", "brush").call(self.brush)
         .selectAll("rect")
         .attr("height", self.graphH);
@@ -103,6 +106,7 @@ CountVis.prototype.initVis = function () {
     }))];
     self.yScale.domain(minMaxY);
 
+
     var minMaxX = d3.extent(self.displayData.map(function (d) {
         return d.time;
     }));
@@ -112,12 +116,25 @@ CountVis.prototype.initVis = function () {
     self.addSlider(self.svg);
     
     // ******* BONUS TASK 2c *******
-    // define zoom
+    var zoomed = function (){
+        self.updateVis();
+    }
+    self.zoom = d3.behavior.zoom().scaleExtent([0.8, 8]).on("zoom", zoomed);
+    
+    self.zoom.x(self.xScale);
+    self.brush.x(self.xScale);
 
     // call the update method
     self.updateVis();
 };
 
+/**
+ * Method to reset zoom 
+ */
+
+CountVis.prototype.resetZoom = function () {
+    alert("reset");
+}
 /**
  * Method to wrangle the data
  */
@@ -144,12 +161,14 @@ CountVis.prototype.updateVis = function () {
     self.visG.select(".xAxis").call(self.xAxis);
     self.visG.select(".yAxis").call(self.yAxis);
 
-    // ******* TASK 2a *******
-    // update the brush
-    
+    // ******* TASK 2a ******* 
+    self.brush.extent([self.brush.extent()[0], self.brush.extent()[1]]);
+    d3.select(".brush").call(self.brush);
+
     // ******* BONUS TASK 2c *******
     // add zoom, and block two events
-
+    self.visG.call(self.zoom)
+        .on("mousedown.zoom", null);
 
     var area = d3.svg.area()
         .x(function (d) {

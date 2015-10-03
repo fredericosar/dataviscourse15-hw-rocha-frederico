@@ -41,7 +41,7 @@
         var countVis = new CountVis(d3.select("#countVis"), allData, metaData, eventHandler);
         var ageVis = new AgeVis(d3.select("#ageVis"), allData, metaData);
         var prioVis = new PrioVis(d3.select("#prioVis"), allData, metaData);
-        
+
         // ******** TASK 3b, 3c *******
         // Bind the eventHandler to the Vis Objects
         // events will be created from the CountVis object (TASK 4b)
@@ -52,8 +52,15 @@
         function selectionChanged (a, b) {
             ageVis.onSelectionChange(a, b);
             prioVis.onSelectionChange(a, b);
+            // update #brushInfo
+            d3.select("#brushInfo").html(a + " ->" + b);   
         }
         eventHandler.on("selectionChanged", selectionChanged);
+
+        // reset zoom on button click
+        d3.select("#fitInBtn").on("click", function (){
+            countVis.resetZoom();
+        });
         
     }
 
