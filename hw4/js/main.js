@@ -40,7 +40,10 @@
         // Instantiate all Vis Objects here
         var countVis = new CountVis(d3.select("#countVis"), allData, metaData, eventHandler);
         var ageVis = new AgeVis(d3.select("#ageVis"), allData, metaData);
-        var prioVis = new PrioVis(d3.select("#prioVis"), allData, metaData);
+        var prioVis = new PrioVis(d3.select("#prioVis"), allData, metaData, eventHandler, false);
+
+        // ******** TASK 4b *******
+        var prioMaxVis = new PrioVis(d3.select("#prioVis"), allData, metaData, eventHandler, true);
 
         // ******** TASK 3b, 3c *******
         // Bind the eventHandler to the Vis Objects
@@ -49,18 +52,28 @@
         // (you should bind the appropriate functions here)
         // Also make sure to display something reasonable about
         // the brush in #brushInfo
-        function selectionChanged (a, b) {
-            ageVis.onSelectionChange(a, b);
-            prioVis.onSelectionChange(a, b);
-            // update #brushInfo
-            d3.select("#brushInfo").html(a + " ->" + b);   
-        }
         eventHandler.on("selectionChanged", selectionChanged);
+        function selectionChanged (start, end) {
+            ageVis.onSelectionChange(start, end);
+            prioVis.onSelectionChange(start, end);
+            // update #brushInfo
+            d3.select("#brushInfo").html(start + " ->" + end);   
+        }
 
-        // reset zoom on button click
-        d3.select("#fitInBtn").on("click", function (){
-            countVis.resetZoom();
+        // ******** TASK 4b *******
+        // Keep track of the show max input
+         d3.select("#originalData").on("change", function() {
+            prioVis.displayCountChart = d3.select("#originalData").property('checked');
+            prioMaxVis.displayCountChart = d3.select("#originalData").property('checked');
+            showCountChart();
         });
+
+        function showCountChart(){
+            // update prioVis
+            prioVis.updateVis();
+            // update prioMaxVis
+            prioMaxVis.updateVis();
+        }
         
     }
 

@@ -20,7 +20,7 @@
  * @param _metaData -- the meta-data / data description object
  * @constructor
  */
-function PrioVis (_parentElement, _data, _metaData) {
+function PrioVis (_parentElement, _data, _metaData, _eventHandler, _countChart) {
     /**
      * A word about "this":
      *
@@ -42,9 +42,15 @@ function PrioVis (_parentElement, _data, _metaData) {
     self.parentElement = _parentElement;
     self.data = _data;
     self.metaData = _metaData;
+    self.eventHandler = _eventHandler;
     self.displayData = [];
 
+    // ******** TASK 4b *******
+    self.countChart = _countChart;
+    self.displayCountChart = false;
+
     self.initVis();
+
 }
 
 
@@ -75,28 +81,35 @@ PrioVis.prototype.initVis = function () {
         "transform": "translate(" + 60 + "," + 10 + ")"
     });
 
-    // xScale and xAxis stays constant:
-    // copied from http://bl.ocks.org/mbostock/4403522
-    self.visG.append("g")
-        .attr("class", "xAxis axis")
-        .attr("transform", "translate(0," + self.graphH + ")")
-        .call(self.xAxis)
-        .selectAll("text")
-        .attr("y", 3) // magic number
-        .attr("x", 10) // magic number
-        .attr("transform", "rotate(45)")
-        .style("text-anchor", "start")
-        .text(function (d) {
-            return self.metaData.priorities[d]["item-title"];
-        });
+    // ******** TASK 4b *******
+    // avoid duplicated stuff
+    // only show x label to main chart 
 
-    self.visG.append("g").attr("class", "yAxis axis");
+    if(!self.countChart){
+        // xScale and xAxis stays constant:
+        // copied from http://bl.ocks.org/mbostock/4403522
+        self.visG.append("g")
+            .attr("class", "xAxis axis")
+            .attr("transform", "translate(0," + self.graphH + ")")
+            .call(self.xAxis)
+            .selectAll("text")
+            .attr("y", 3) // magic number
+            .attr("x", 10) // magic number
+            .attr("transform", "rotate(45)")
+            .style("text-anchor", "start")
+            .text(function (d) {
+                return self.metaData.priorities[d]["item-title"];
+            });
+
+        self.visG.append("g").attr("class", "yAxis axis");
+    }
 
     // filter, aggregate, modify data
     self.wrangleData(null);
 
     // call the update method
-    self.updateVis();
+    self.updateVis(false);
+
 };
 
 
@@ -113,17 +126,20 @@ PrioVis.prototype.wrangleData = function (_filterFunction) {
 };
 
 
-
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
 PrioVis.prototype.updateVis = function () {
 
-
     var self = this;
 
     // update the scales :
     var minMaxY = [0, d3.max(self.displayData)];
+
+    // ******** TASK 4b *******
+    if(self.displayCountChart) minMaxY = [0, 862905];
+
+
     self.yScale.domain(minMaxY);
     self.yAxis.scale(self.yScale);
 
@@ -131,14 +147,22 @@ PrioVis.prototype.updateVis = function () {
     self.visG.select(".yAxis").call(self.yAxis);
     
     // draw the bars :
-    var bars = self.visG.selectAll(".bar").data(self.displayData);
+    // ******** TASK 4b *******
+    var barClass = (self.countChart) ? "barMax" : "bar";
+
+
+    var bars = self.visG.selectAll("." + barClass).data(self.displayData);
     bars.exit().remove();
     bars.enter().append("rect")
         .attr({
-            "class": "bar",
-            "width": self.xScale.rangeBand(),
+            "class": barClass,
+            "width": function(){
+                // ******** TASK 4b *******
+                return (self.countChart) ? self.xScale.rangeBand() / 2 : self.xScale.rangeBand();
+            },
             "x": function (d, i) {
-                return self.xScale(i);
+                // ******** TASK 4b *******
+                return (self.countChart) ? self.xScale(i) + (self.xScale.rangeBand() / 2) : self.xScale(i);
             }
         }).style({
             "fill": function (d, i) {
@@ -148,14 +172,48 @@ PrioVis.prototype.updateVis = function () {
 
     bars.attr({
         "height": function (d) {
-            return self.graphH - self.yScale(d) - 1;
+            return (self.countChart) ? 0 : self.graphH - self.yScale(d);
         },
         "y": function (d) {
-            return self.yScale(d);
+            // ******** TASK 4b *******
+            return (self.countChart) ? 300 : self.yScale(d) - 1;
         }
     });
-};
 
+
+    // ******** TASK 4b *******
+    bars.transition()
+    .duration(640)
+    .delay(function(d, i){
+        return i * 40;
+    })
+    .attr("width", function(){
+        // ******** TASK 4b *******
+        if(!self.countChart){
+            return (self.displayCountChart) ? (self.xScale.rangeBand() / 2) - 1 : self.xScale.rangeBand();
+        }else{
+            return self.xScale.rangeBand() / 2;
+        }
+    });
+
+    // ******** TASK 4b *******
+    // vertical moves
+    if(self.countChart){
+        self.visG.selectAll(".barMax").data(self.displayData)
+        .transition()
+        .duration(640)
+        .delay(function(d, i){
+            return 400 + i * 40;
+        })
+        .attr("y", function(d){
+            return (self.displayCountChart) ? self.yScale(d) - 1: 300;
+        })
+        .attr("height", function(d){
+            return (self.displayCountChart) ? self.graphH - self.yScale(d) : 0;
+        });
+    }
+
+};
 
 /**
  * Gets called by event handler and should create new aggregated data

@@ -30,3 +30,7 @@ body{
     pointer-events: all;
     cursor: move;
 }
+
+#comparison{
+    float: left;
+}

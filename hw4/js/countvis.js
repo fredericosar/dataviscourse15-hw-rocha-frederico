@@ -119,8 +119,13 @@ CountVis.prototype.initVis = function () {
     var zoomed = function (){
         self.updateVis();
     }
-    self.zoom = d3.behavior.zoom().scaleExtent([0.8, 8]).on("zoom", zoomed);
+    self.zoom = d3.behavior.zoom().scaleExtent([1, 4]).on("zoom", zoomed);
     
+    // reset zoom on button click
+    d3.select("#fitInBtn").on("click", function (){
+        self.resetZoom();
+    });
+
     self.zoom.x(self.xScale);
     self.brush.x(self.xScale);
 
