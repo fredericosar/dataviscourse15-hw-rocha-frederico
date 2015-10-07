@@ -167,6 +167,9 @@ PrioVis.prototype.updateVis = function () {
         }).style({
             "fill": function (d, i) {
                 return self.metaData.priorities[i]["item-color"];
+            },
+            "opacity": function(){
+                return self.countChart ? 0.25 : 1;
             }
         });
 

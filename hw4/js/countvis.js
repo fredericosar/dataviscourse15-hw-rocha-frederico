@@ -71,6 +71,11 @@ CountVis.prototype.initVis = function () {
     // ******* TASK 2a *******
     
     // define a clipping region for the graph
+    self.svg.append("clipPath")
+        .attr("id", "priority-clip") 
+        .append("rect")
+        .attr("width", self.graphW)
+        .attr("height", self.graphH);
 
     // create the brush, and
     // ******* TASK 3a *******
@@ -82,11 +87,12 @@ CountVis.prototype.initVis = function () {
             self.eventHandler.selectionChanged(self.brush.extent()[0], self.brush.extent()[1]);
         }
     }
-    self.brush = d3.svg.brush().x(self.xScale).on("brush", self.brushed);
+    self.brush = d3.svg.brush();
+    self.brush.x(self.xScale).on("brush", self.brushed);
 
     // visual elements
     self.visG = self.svg.append("g").attr({
-        "transform": "translate(" + 100 + "," + 10 + ")"
+        "transform": "translate(" + 100 + "," + 10 + ")"    
     });
 
     self.visG.append("g").attr("class", "xAxis axis").attr("transform", "translate(0," + self.graphH + ")");
@@ -94,6 +100,7 @@ CountVis.prototype.initVis = function () {
 
     self.visG.append("g").attr("class", "brush").call(self.brush)
         .selectAll("rect")
+        .attr("clip-path", "url(#priority-clip)")
         .attr("height", self.graphH);
 
     // filter, aggregate, modify data
@@ -117,13 +124,17 @@ CountVis.prototype.initVis = function () {
     
     // ******* BONUS TASK 2c *******
     var zoomed = function (){
+        console.log(self.zoom);
         self.updateVis();
     }
-    self.zoom = d3.behavior.zoom().scaleExtent([1, 4]).on("zoom", zoomed);
+    self.zoom = d3.behavior.zoom().scaleExtent([1, 5]).on("zoom", zoomed);
     
     // reset zoom on button click
     d3.select("#fitInBtn").on("click", function (){
-        self.resetZoom();
+        // clear brush
+        self.zoom.translate([0, 0]).scale(1)
+        // update vis
+        self.updateVis();
     });
 
     self.zoom.x(self.xScale);
@@ -133,13 +144,6 @@ CountVis.prototype.initVis = function () {
     self.updateVis();
 };
 
-/**
- * Method to reset zoom 
- */
-
-CountVis.prototype.resetZoom = function () {
-    alert("reset");
-}
 /**
  * Method to wrangle the data
  */
@@ -189,6 +193,7 @@ CountVis.prototype.updateVis = function () {
     var areaGraph = self.visG.selectAll(".area").data([self.displayData]);
     areaGraph.enter()
         .append("path")
+        .attr("clip-path", "url(#priority-clip)")
         .attr("class", "area");
     areaGraph
         .attr("d", area);
