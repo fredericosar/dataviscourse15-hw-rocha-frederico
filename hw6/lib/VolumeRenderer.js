@@ -235,6 +235,9 @@ VolumeRenderer.prototype.updateTransferFunction = function (colorScale) {
         ctx.fillRect(i, 0, 1, 2);
     }
     
+    var transferFunctionRect = document.getElementById("transferFunctionRect");
+    transferFunctionRect.src = canvas.toDataURL();
+
     transferTexture = new THREE.Texture(canvas);
     transferTexture.wrapS = transferTexture.wrapT = THREE.ClampToEdgeWrapping;
     transferTexture.needsUpdate = true;
