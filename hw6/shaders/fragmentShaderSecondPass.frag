@@ -132,8 +132,8 @@ void main( void ) {
         accumulatedColor += (1.0 - accumulatedAlpha) * colorSample * alphaSample;
         accumulatedAlpha += alphaSample;
         
-        //(optional) lighting
-//        colorSample.rgb = shade(colorSample.rgb, p, sampleAs3DTexture(p), dir);
+        // Lighting Extra part
+        colorSample.rgb = shade(colorSample.rgb, p, sampleAs3DTexture(p), dir);
         
         p += dtDirection;
         t += dt;

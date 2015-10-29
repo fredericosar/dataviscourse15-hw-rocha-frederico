@@ -10,7 +10,7 @@ function ColorPicker(div) {
     self.out = true;
 
     var pie = d3.layout.pie().sort(null);
-    var arc = d3.svg.arc().innerRadius(0).outerRadius(40);
+    var arc = d3.svg.arc().innerRadius(10).outerRadius(40);
 
     var data = d3.range(360).map(function(d, i){
     	return {

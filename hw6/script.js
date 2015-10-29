@@ -10,28 +10,29 @@ var colorC = new ColorPicker("#colorC");
 var colorD = new ColorPicker("#colorD");
 var colorE = new ColorPicker("#colorE");
 
-var colors = [0.0, 0.2, 0.2, 0.4, 0.4, 0.6, 0.6, 0.8, 0.8, 1.0];
+/* initiate color boarders */
+var colors = [0.0, 0.15, 0.2, 0.35, 0.4, 0.55, 0.6, 0.75, 0.8, 1.0];
 
 /* selectors */
-d3.select('#sliderA').call(d3.slider().axis(false).value([0, 20]).on("slide", function(evt, value) {
+d3.select('#sliderA').call(d3.slider().axis(false).value([0, 15]).on("slide", function(evt, value) {
     colors[0] = value[0] / 100;
     colors[1] = value[1] / 100;
     updateTransferFunction();
 }));
 
-d3.select('#sliderB').call(d3.slider().axis(false).value([20, 40]).on("slide", function(evt, value) {
+d3.select('#sliderB').call(d3.slider().axis(false).value([20, 35]).on("slide", function(evt, value) {
     colors[2] = value[0] / 100;
     colors[3] = value[1] / 100;
     updateTransferFunction();
 }));
 
-d3.select('#sliderC').call(d3.slider().axis(false).value([40, 60]).on("slide", function(evt, value) {
+d3.select('#sliderC').call(d3.slider().axis(false).value([40, 55]).on("slide", function(evt, value) {
     colors[4] = value[0] / 100;
     colors[5] = value[1] / 100;
     updateTransferFunction();
 }));
 
-d3.select('#sliderD').call(d3.slider().axis(false).value([60, 80]).on("slide", function(evt, value) {
+d3.select('#sliderD').call(d3.slider().axis(false).value([60, 75]).on("slide", function(evt, value) {
     colors[6] = value[0] / 100;
     colors[7] = value[1] / 100;
     updateTransferFunction();
@@ -80,6 +81,7 @@ function setup() {
         console.log(this.value + ' histogram:', getHistogram(this.value, 0.025));
     });
     console.log('bonsai histogram:', getHistogram('bonsai', 0.025));
+    updateTransferFunction();
 }
 
 /*
