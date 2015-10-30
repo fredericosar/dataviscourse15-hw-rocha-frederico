@@ -41,6 +41,7 @@
         }
 
         .tf{
+            width: 100%;
             text-align: center;
             padding-top: 10px;
         }
@@ -62,8 +63,8 @@
 
 
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    <link rel="stylesheet" href="lib/d3.slider.css"/>
-    <script src="lib/d3.slider.js"></script>
+    <link rel="stylesheet" href="lib/jquery.range.css"/>
+    <script src="lib/jquery.range.js"></script>
 
 </head>
 
@@ -90,32 +91,35 @@
         </span>
     </div>
 
-    <div class="color">
+    <div id="model" class="color">
         <svg class="inline" id="colorA" width="100" height="100"></svg>
-        <div class="d3-slider d3-slider-horizontal" id="sliderA"></div>
+        <input type="hidden" class="slider-input1" value="0,15" />
+        <svg id="histogram1" width="280px" height="100"></svg>
     </div>
     <div class="color">
         <svg id="colorB" width="100" height="100"></svg>
-        <div class="d3-slider d3-slider-horizontal" id="sliderB"></div>
+        <input type="hidden" class="slider-input2" value="20,35" />
+        <svg id="histogram2" width="280px" height="100"></svg>
     </div>
     <div class="color">
         <svg id="colorC" width="100" height="100"></svg>
-        <div class="d3-slider d3-slider-horizontal" id="sliderC"></div>
+        <input type="hidden" class="slider-input3" value="40,55" />
+        <svg id="histogram3" width="280px" height="100"></svg>
     </div>
     <div class="color">
         <svg id="colorD" width="100" height="100"></svg>
-        <div class="d3-slider d3-slider-horizontal" id="sliderD"></div>
+        <input type="hidden" class="slider-input4" value="60,75" />
+        <svg id="histogram4" width="280px" height="100"></svg>
     </div>
     <div class="color">
         <svg id="colorE" width="100" height="100"></svg>
-        <div class="d3-slider d3-slider-horizontal" id="sliderE"></div>
+        <input type="hidden" class="slider-input5" value="80,100" />
+        <svg id="histogram5" width="280px" height="100"></svg>
     </div>
-
     <div class="tf">
         Transfer Function Result
+        <img id="transferFunctionRect" width="100%" height="60px"/>
     </div>
-
-    <img id="transferFunctionRect" width="100%" height="128px"/>
 
     <script src="colorPicker.js"></script>
     <script src="script.js"></script>

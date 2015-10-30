@@ -125,15 +125,17 @@ void main( void ) {
 				
     for(int i = 0; i < 4096; i++)
     {
-        vec4 colorSample = classify(sampleAs3DTexture(p));
+        float value = sampleAs3DTexture(p);
+        vec4 colorSample = classify(value);
         float alphaSample = colorSample.a * alphaCorrection;
         
+        // EXTRA PART
+        // Lighting 
+        colorSample.rgb = shade(colorSample.rgb, p, value, dir);
+
         //front-to-back compositing
         accumulatedColor += (1.0 - accumulatedAlpha) * colorSample * alphaSample;
         accumulatedAlpha += alphaSample;
-        
-        // Lighting Extra part
-        colorSample.rgb = shade(colorSample.rgb, p, sampleAs3DTexture(p), dir);
         
         p += dtDirection;
         t += dt;

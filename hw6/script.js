@@ -13,37 +13,6 @@ var colorE = new ColorPicker("#colorE");
 /* initiate color boarders */
 var colors = [0.0, 0.15, 0.2, 0.35, 0.4, 0.55, 0.6, 0.75, 0.8, 1.0];
 
-/* selectors */
-d3.select('#sliderA').call(d3.slider().axis(false).value([0, 15]).on("slide", function(evt, value) {
-    colors[0] = value[0] / 100;
-    colors[1] = value[1] / 100;
-    updateTransferFunction();
-}));
-
-d3.select('#sliderB').call(d3.slider().axis(false).value([20, 35]).on("slide", function(evt, value) {
-    colors[2] = value[0] / 100;
-    colors[3] = value[1] / 100;
-    updateTransferFunction();
-}));
-
-d3.select('#sliderC').call(d3.slider().axis(false).value([40, 55]).on("slide", function(evt, value) {
-    colors[4] = value[0] / 100;
-    colors[5] = value[1] / 100;
-    updateTransferFunction();
-}));
-
-d3.select('#sliderD').call(d3.slider().axis(false).value([60, 75]).on("slide", function(evt, value) {
-    colors[6] = value[0] / 100;
-    colors[7] = value[1] / 100;
-    updateTransferFunction();
-}));
-
-d3.select('#sliderE').call(d3.slider().axis(false).value([80, 100]).on("slide", function(evt, value) {
-    colors[8] = value[0] / 100;
-    colors[9] = value[1] / 100;
-    updateTransferFunction();
-}));
-
 function getRBGA(color, opacity){
     return "rgba(" + color.r + "," + color.g + "," + color.b + "," + opacity + ")";
 }
@@ -79,9 +48,142 @@ function setup() {
     d3.select('#volumeMenu').on('change', function () {
         renderer.switchVolume(this.value);
         console.log(this.value + ' histogram:', getHistogram(this.value, 0.025));
+        /* clear hists */
+        for(var i = 1; i <= 5; i++){
+            d3.select("#hist" + i).remove();
+        }
+        histogram(this.value);
     });
     console.log('bonsai histogram:', getHistogram('bonsai', 0.025));
+    /* build histogram */
+    histogram("bonsai");
+    /* build tf */
     updateTransferFunction();
+    /* sliders */
+    createSliders();
+}
+
+/* build histogram */
+
+function histogram(form) {
+ 
+    var data = getHistogram(form, 0.005);
+
+    data[0]["count"] = 400000;
+
+    /* scales */
+    var xScale = d3.scale.linear().range([0, 200]);
+    var yScale = d3.scale.linear().range([0, 100]);
+
+    var minMaxY = [d3.min(data, function(d){
+        return d.count;
+    }), d3.max(data, function(d){
+        return d.count;
+    })];
+    yScale.domain(minMaxY);
+
+    var minMaxX = [0, 200];
+    xScale.domain(minMaxX);
+
+    for(var i = 1; i <= 5; i++){
+
+    var svg = d3.select("#histogram" + i);
+
+        /* bars */
+        var bars = svg.append("g").attr("id", "hist" + i).selectAll(".bar").data(data);
+
+        /* draw bars */
+        bars.exit().remove();
+        bars.enter().append("rect")
+            .attr("y", 0)
+            .attr("height", function(d){
+                return yScale(d.count);
+            })
+            .attr("width", "1")
+            .attr("x", function(d, i){
+                return xScale(i);
+            })
+            .attr("fill", "#e88d0c");
+    }
+}
+
+function createSliders(){
+    /* sliders */
+    $('.slider-input1').jRange({
+        from: 0,
+        to: 100,
+        step: 1,
+        format: '%s',
+        width: 200,
+        showLabels: true,
+        isRange : true,
+        onstatechange: function(d){
+            var value = d.split(",")
+            colors[0] = parseFloat(value[0]) / 100;
+            colors[1] = parseFloat(value[1]) / 100;
+            updateTransferFunction();
+        }
+    });
+    $('.slider-input2').jRange({
+        from: 0,
+        to: 100,
+        step: 1,
+        format: '%s',
+        width: 200,
+        showLabels: true,
+        isRange : true,
+        onstatechange: function(d){
+            var value = d.split(",")
+            colors[2] = parseFloat(value[0]) / 100;
+            colors[3] = parseFloat(value[1]) / 100;
+            updateTransferFunction();
+        }
+    });
+    $('.slider-input3').jRange({
+        from: 0,
+        to: 100,
+        step: 1,
+        format: '%s',
+        width: 200,
+        showLabels: true,
+        isRange : true,
+        onstatechange: function(d){
+            var value = d.split(",")
+            colors[4] = parseFloat(value[0]) / 100;
+            colors[5] = parseFloat(value[1]) / 100;
+            updateTransferFunction();
+        }
+    });
+    $('.slider-input4').jRange({
+        from: 0,
+        to: 100,
+        step: 1,
+        format: '%s',
+        width: 200,
+        showLabels: true,
+        isRange : true,
+        onstatechange: function(d){
+            var value = d.split(",")
+            colors[6] = parseFloat(value[0]) / 100;
+            colors[7] = parseFloat(value[1]) / 100;
+            updateTransferFunction();
+        }
+    });
+    $('.slider-input5').jRange({
+        from: 0,
+        to: 100,
+        step: 1,
+        format: '%s',
+        width: 200,
+        showLabels: true,
+        isRange : true,
+        onstatechange: function(d){
+            var value = d.split(",")
+            colors[8] = parseFloat(value[0]) / 100;
+            colors[9] = parseFloat(value[1]) / 100;
+            updateTransferFunction();
+        }
+    });
 }
 
 /*
