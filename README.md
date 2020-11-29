@@ -1,2 +1,2 @@
 Frederico Rocha
-fred@cs.utah.edu 
+~~fred at cs.utah.edu~~ is no longer valid :(
